@@ -35,9 +35,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  */
 @SuppressWarnings("deprecation")
 public class CN1AppiumAndroidTest {
-     private AppiumDriver<WebElement> driver;
-
-    private List<Integer> values;
+    private AppiumDriver<WebElement> driver;
 
     private static final int MINIMUM = 0;
     private static final int MAXIMUM = 10;
@@ -65,10 +63,11 @@ public class CN1AppiumAndroidTest {
         String apkPath = System.getProperty("app", null);
         if (apkPath != null) {
             capabilities.setCapability("app", apkPath);
-            if (System.getProperty("deviceName") != null) {
-                capabilities.setCapability("deviceName", System.getProperty("deviceName", "Android Emulator"));
-            }
-            if (System.getProperty("platformVersion") != null) {
+            String defaultDevice = "Android Emulator";
+            String deviceName = System.getProperty("deviceName", defaultDevice);
+            if (deviceName.isEmpty()) deviceName = defaultDevice;
+            capabilities.setCapability("deviceName", deviceName);
+            if (System.getProperty("platformVersion") != null && !"".equals(System.getProperty("platformVersion"))) {
                 capabilities.setCapability("platformVersion", System.getProperty("platformVersion", "7.1.1"));
             }
         }
@@ -81,8 +80,12 @@ public class CN1AppiumAndroidTest {
         capabilities.setCapability("automationName", "XCUITest");
         */
         startTime = System.currentTimeMillis();
-        driver = new AndroidDriver<WebElement>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
-        values = new ArrayList<Integer>();
+        URL url = new URL("http://127.0.0.1:4723/wd/hub");
+        if (System.getProperty("appium.url") != null && !"".equals(System.getProperty("appium.url"))) {
+            url = new URL(System.getProperty("appium.url"));
+        }
+        driver = new AndroidDriver<WebElement>(url, capabilities);
+        
     }
 
     @After
