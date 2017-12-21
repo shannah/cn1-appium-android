@@ -63,6 +63,9 @@ public class CN1AppiumAndroidTest {
         String apkPath = System.getProperty("app", null);
         if (apkPath != null) {
             capabilities.setCapability("app", new File(apkPath).getAbsolutePath());
+            if (System.getProperty("deviceName", null) == null && System.getenv("CN1_ANDROID_DEVICE_NAME") != null) {
+                System.setProperty("deviceName", "CN1_ANDROID_DEVICE_NAME");
+            }
             String defaultDevice = "Android Emulator";
             String deviceName = System.getProperty("deviceName", defaultDevice);
             if (deviceName.isEmpty()) deviceName = defaultDevice;
